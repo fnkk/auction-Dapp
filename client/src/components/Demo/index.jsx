@@ -7,6 +7,7 @@ import ContractBtns from "./ContractBtns";
 import Desc from "./Desc";
 import NoticeNoArtifact from "./NoticeNoArtifact";
 import NoticeWrongNetwork from "./NoticeWrongNetwork";
+import Test from "./Test";
 
 function Demo() {
   const { state } = useEth();
@@ -18,6 +19,7 @@ function Demo() {
       <div className="contract-container">
         <Contract value={value} />
         <ContractBtns setValue={setValue} />
+        <Test setValue={setValue}/>
       </div>
       <Desc />
     </>;
