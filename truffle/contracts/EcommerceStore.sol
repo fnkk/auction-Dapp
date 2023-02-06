@@ -18,7 +18,7 @@ contract EcommerceStore {
         Sold,
         Unsold
     }
-    enum ProdectCondition {
+    enum ProductCondition {
         New,
         Used
     }
@@ -50,11 +50,11 @@ contract EcommerceStore {
         uint256 secondHighestBid;
         uint256 totalBids;
         ProductStatus status;
-        ProdectCondition condition;
-        mapping(address => mapping(bytes32 => Bid)) bids;
+        ProductCondition condition;
+        // mapping(address => mapping(bytes32 => Bid)) bids;
     }
-
-    Product[] private prodects;
+    mapping(uint256=>mapping(address => mapping(bytes32 => Bid))) bidInProduct;
+    Product[] private products;
 
     constructor() {
         productIndex = 0;
@@ -68,29 +68,30 @@ contract EcommerceStore {
         uint256 _autionStartTime,
         uint256 _autionEndTime,
         uint256 _startPrice,
-        ProdectCondition _condition
+        ProductCondition _condition
     ) public {
         require(_autionStartTime < _autionEndTime);
         productIndex += 1;
-        // Product memory product = Product(productIndex,_name,_category,_imageLink,_descLink,_autionStartTime,_autionEndTime,_startPrice,address(0),0,0,0,ProductStatus.Open,_condition);
-        Product storage product = prodects[productIndex];
+        Product memory product = Product(productIndex,_name,_category,_imageLink,_descLink,_autionStartTime,_autionEndTime,_startPrice,payable(address(0)),0,0,0,ProductStatus.Open,_condition);
+        // Product storage product = products[productIndex];
         // Product storage product = stores[msg.sender][productIndex];
-        product.id = productIndex;
-        product.name = _name;
-        product.category = _category;
-        product.imageLink = _imageLink;
-        product.descLink = _descLink;
-        product.autionEndTime = _autionEndTime;
-        product.startPrice = _startPrice;
-        product.condition = _condition;
-        product.status = ProductStatus.Open;
+        // product.id = productIndex;
+        // product.name = _name;
+        // product.category = _category;
+        // product.imageLink = _imageLink;
+        // product.descLink = _descLink;
+        // product.autionEndTime = _autionEndTime;
+        // product.startPrice = _startPrice;
+        // product.condition = _condition;
+        // product.status = ProductStatus.Open;
+        stores[msg.sender][productIndex] = product;
         productIdInStore[productIndex] = msg.sender;
     }
 
     function getProduct(uint256 _productId)
-        internal
+        public
         view
-        returns (Product storage)
+        returns (Product memory)
     {
         Product storage product = stores[productIdInStore[_productId]][
             _productId
@@ -107,19 +108,22 @@ contract EcommerceStore {
             _productId
         ];
         require(
-            block.timestamp >= product.autionStartTime &&
-                block.timestamp <= product.autionEndTime,
-            "wei dao pai mai shi jian"
+            block.timestamp >= product.autionStartTime,
+            "Auction time is not reached"
         );
+        require(
+            block.timestamp <= product.autionEndTime,
+            "Auction time has passed"    
+            );
         require(
             msg.value > product.startPrice,
             "Value should be larger than start pirce"
         );
         require(
-            product.bids[msg.sender][_bid].bidder == address(0),
+            bidInProduct[product.id][msg.sender][_bid].bidder == address(0),
             "Bidder should be null"
         );
-        product.bids[msg.sender][_bid] = Bid(
+        bidInProduct[product.id][msg.sender][_bid] = Bid(
             msg.sender,
             _productId,
             msg.value,
@@ -140,7 +144,7 @@ contract EcommerceStore {
         require(block.timestamp > product.autionEndTime);
         bytes32 sealedBid = keccak256(abi.encodePacked(_amount, _secret));
 
-        Bid memory bidInfo = product.bids[msg.sender][sealedBid];
+        Bid memory bidInfo = bidInProduct[product.id][msg.sender][sealedBid];
         require(bidInfo.bidder != address(0));
         require(bidInfo.revealed == false);
 
@@ -173,7 +177,7 @@ contract EcommerceStore {
                 }
             }
         }
-        product.bids[msg.sender][sealedBid].revealed = true;
+        bidInProduct[product.id][msg.sender][sealedBid].revealed = true;
 
         if (refund > 0) {
             payable(msg.sender).transfer(refund);

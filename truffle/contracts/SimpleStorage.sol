@@ -11,4 +11,5 @@ contract SimpleStorage {
   function write(uint256 newValue) public {
     value = newValue;
   }
+
 }
