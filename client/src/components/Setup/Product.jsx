@@ -1,6 +1,23 @@
 import imgUrl from '../../img/author.jpg'
+import { useState, useEffect } from "react";
+import useEth from "../../contexts/EthContext/useEth";
 function Product() {
+    const [productVal, setProductVal] = useState({
+        id: '',
+        name: '',
+        cate: '',
+        des: '',
+        startTime: '',
+        endTime: ''
+    });
+    const { state: { contract, accounts } } = useEth();
+    const getMessage = async () => {
+            const value = await contract.methods.getProduct(1).call({ from: accounts[0] });
+            setProductVal({ id: value[0], name: value[1], cate: value[2], des: value[4], startTime: value[5], endTime: value[6] })
+            console.log('renewed product object', productVal)
+    }
 
+    // getMessage()  
     return (
         <>
             <div>

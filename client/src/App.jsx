@@ -3,6 +3,7 @@ import Intro from "./components/Intro/";
 import Setup from "./components/Setup/Setup";
 import Demo from "./components/Demo";
 import Footer from "./components/Footer";
+import "antd/dist/antd.min.css";
 import "./App.css";
 
 function App() {

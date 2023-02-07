@@ -1,8 +1,9 @@
 import Product from "./Product";
-import { useEffect } from "react";
-function Setup() {
-  
+import useEth from "../../contexts/EthContext/useEth";
 
+
+function Setup() {
+  const { state } = useEth();
   return (
     <>
       <Product></Product>

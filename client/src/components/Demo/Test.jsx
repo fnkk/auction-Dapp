@@ -5,7 +5,7 @@ function ContractBtns() {
   const { state: { contract, accounts } } = useEth();
   const [inputValue, setInputValue] = useState("");
   const [productId, setProductId] = useState("");
-
+  console.log('contarc in test ',contract)
   const handleInputChange = e => {
     if (/^\d+$|^$/.test(e.target.value)) {
       setInputValue(e.target.value);
