@@ -4,6 +4,7 @@ import useEth from "../../contexts/EthContext/useEth";
 import toDate from '../../utils/toDate';
 import { Col, Row, Button } from 'antd';
 function Product({ i }) {
+    const { state: { contract, accounts, web3 } } = useEth();
     const [productVal, setProductVal] = useState({
         id: '',
         name: '',
@@ -12,13 +13,18 @@ function Product({ i }) {
         startTime: '',
         endTime: ''
     });
-
-    const { state: { contract, accounts } } = useEth();
+    async function test() {
+        const amt_1 = web3.utils.toWei('1','ether');
+        const sealedBid = web3.utils.sha3((2 * amt_1) + 'mysecretacc1');
+        console.log('this is test',sealedBid)
+        const res = await contract.methods.bid(6,sealedBid).send({ value: 4*amt_1,from: accounts[0] });
+        console.log(res)
+    }
     const getMessage = useCallback(async () => {
         const value = await contract.methods.getProduct(i).call({ from: accounts[0] });
-        // console.log(value,value[0])
+        console.log('all messege',value)
         setProductVal({ id: value[0], name: value[1], cate: value[2], des: value[4], startTime: value[5], endTime: value[6] })
-        console.log('new product object', i)
+        // console.log('new product object', i)
     }, [accounts, i, contract.methods])
     useEffect(() => {
         getMessage()
@@ -38,6 +44,7 @@ function Product({ i }) {
                         <div>拍卖结束时间：{toDate(productVal.endTime)}</div>
                     </Col>
                     <Col span={12} className='bid'>
+                        <Button onClick={test}>test</Button>
                         <Button>出价</Button>
                     </Col>
                 </Row>
