@@ -3,6 +3,9 @@ import { useState } from "react";
 import { Button, DatePicker, Space, Form, Input } from 'antd';
 
 function Added() {
+    const buttonStyle={
+        marginRight:"15px"
+    }
     const { state: { contract, accounts, web3 } } = useEth();
     function test(){
         console.log(web3.utils.toWei('1'))
@@ -120,7 +123,7 @@ function Added() {
                         span: 16,
                     }}
                 >
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" style={buttonStyle}>
                         保存
                     </Button>
                     <Button type="primary" onClick={addProductInStore}>

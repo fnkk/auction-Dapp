@@ -19,7 +19,7 @@ function Setup() {
       {
         function () {
           let res = []
-          for (let i = total; i >= 5; i--) {
+          for (let i = total; i >= 1; i--) {
             res.push((<Product key={i} i={i}></Product>))
           }
           return res

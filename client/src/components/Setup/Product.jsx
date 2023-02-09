@@ -2,9 +2,10 @@ import imgUrl from '../../img/author.jpg'
 import { useState, useEffect, useCallback } from "react";
 import useEth from "../../contexts/EthContext/useEth";
 import toDate from '../../utils/toDate';
-import { Col, Row, Button } from 'antd';
+import { Col, Row, Button, Input } from 'antd';
 function Product({ i }) {
     const { state: { contract, accounts, web3 } } = useEth();
+    const [bidValue,setBidValue] = useState(0);
     const [productVal, setProductVal] = useState({
         id: '',
         name: '',
@@ -13,12 +14,16 @@ function Product({ i }) {
         startTime: '',
         endTime: ''
     });
-    async function test() {
+    async function bid() {
         const amt_1 = web3.utils.toWei('1','ether');
-        const sealedBid = web3.utils.sha3((2 * amt_1) + 'mysecretacc1');
+        const sealedBid = web3.utils.sha3((bidValue * amt_1) + 'mysecretacc1');
         console.log('this is test',sealedBid)
-        const res = await contract.methods.bid(6,sealedBid).send({ value: 4*amt_1,from: accounts[0] });
+        const res = await contract.methods.bid(i,sealedBid).send({ value: bidValue*amt_1,from: accounts[0] });
         console.log(res)
+    }
+    const bidChangeHandle = (e)=>{
+        console.log(e.target.value)
+        setBidValue(e.target.value)
     }
     const getMessage = useCallback(async () => {
         const value = await contract.methods.getProduct(i).call({ from: accounts[0] });
@@ -44,8 +49,8 @@ function Product({ i }) {
                         <div>拍卖结束时间：{toDate(productVal.endTime)}</div>
                     </Col>
                     <Col span={12} className='bid'>
-                        <Button onClick={test}>test</Button>
-                        <Button>出价</Button>
+                        <Input addonAfter="ether" onChange={bidChangeHandle}></Input>
+                        <Button onClick={bid}>出价</Button>
                     </Col>
                 </Row>
 
