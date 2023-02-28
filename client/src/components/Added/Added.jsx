@@ -45,6 +45,8 @@ function Added() {
             return {...product,startTime,endTime}
         })
       };
+
+
     return (
         <>  
             <button onClick={test}>test</button>

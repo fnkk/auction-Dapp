@@ -60,32 +60,26 @@ contract EcommerceStore {
         productIndex = 0;
     }
 
+    // 事件
+     event NewProduct(uint _productId, string _name, string _category, string _imageLink, string _descLink,
+  uint _auctionStartTime, uint _auctionEndTime, uint _startPrice, uint _productCondition);
+
     function addProductToStore(
         string memory _name,
         string memory _category,
         string memory _imageLink,
         string memory _descLink,
-        uint256 _autionStartTime,
-        uint256 _autionEndTime,
+        uint256 _auctionStartTime,
+        uint256 _auctionEndTime,
         uint256 _startPrice,
         ProductCondition _condition
     ) public {
-        require(_autionStartTime < _autionEndTime);
+        require(_auctionStartTime < _auctionEndTime);
         productIndex += 1;
-        Product memory product = Product(productIndex,_name,_category,_imageLink,_descLink,_autionStartTime,_autionEndTime,_startPrice,payable(address(0)),0,0,0,ProductStatus.Open,_condition);
-        // Product storage product = products[productIndex];
-        // Product storage product = stores[msg.sender][productIndex];
-        // product.id = productIndex;
-        // product.name = _name;
-        // product.category = _category;
-        // product.imageLink = _imageLink;
-        // product.descLink = _descLink;
-        // product.autionEndTime = _autionEndTime;
-        // product.startPrice = _startPrice;
-        // product.condition = _condition;
-        // product.status = ProductStatus.Open;
+        Product memory product = Product(productIndex,_name,_category,_imageLink,_descLink,_auctionStartTime,_auctionEndTime,_startPrice,payable(address(0)),0,0,0,ProductStatus.Open,_condition);
         stores[msg.sender][productIndex] = product;
         productIdInStore[productIndex] = msg.sender;
+        emit NewProduct(productIndex, _name, _category, _imageLink, _descLink, _auctionStartTime, _auctionEndTime, _startPrice, uint256(_condition));
     }
 
     function getProduct(uint256 _productId)
