@@ -6,22 +6,14 @@ import Demo from "./components/Demo";
 import Footer from "./components/Footer";
 import "antd/dist/reset.css";
 import "./App.css";
+import router from './router';
+import { RouterProvider } from "react-router-dom";
 
 function App() {
   return (
     <EthProvider>
       <div id="App" >
-        <div className="container">
-          <Intro />
-          <hr />
-          <Added />
-          <hr />
-          <Setup />
-          <hr />
-          <Demo />
-          <hr />
-          <Footer />
-        </div>
+        <RouterProvider router={router}></RouterProvider>
       </div>
     </EthProvider>
   );
