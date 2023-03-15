@@ -1,19 +1,45 @@
-import { ConfigProvider } from 'antd';
 import 'dayjs/locale/zh-cn';
-import zhCN from 'antd/locale/zh_CN'
-import {
-  createBrowserRouter,
-} from "react-router-dom";
-import Test from '../pages/test/index' 
-import Demo from '../components/Demo/index'
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import Test from '../pages/test/index';
+import Demo from '../components/Demo/index';
+import Layout from '../layout';
+import Auction from '../pages/auction';
+import Homepage from '../pages/homepage';
+import My from '../pages/my';
+import TrackSource from '../pages/trackSource';
+
+
 const router = createBrowserRouter([
-    {
-        path: "/main",
-        element: <Test/>
+  {
+    path: "/",
+    element: <Navigate to='/test' />
+  },
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/test",
+        element: <Test />
       },
-    {
-        path: "/996",
-        element: <Demo></Demo>
+      {
+        path: "/auction",
+        element: <Auction />
       },
+      {
+        path: "/homepage",
+        element: <Homepage />
+      },
+      {
+        path: "/trackSource",
+        element: <TrackSource />
+      },
+      {
+        path: "/my",
+        element: <My />
+      },
+    ]
+  },
+
 ]);
 export default router

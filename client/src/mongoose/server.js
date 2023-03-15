@@ -14,7 +14,7 @@ ssss = new web3.eth.Contract(abi, address);
 // ssss 是通过web3.js拿到的合约
 // console.log(ssss)
 
-// Mongoose setup to interact with the mongodb database 
+// Mongoose setup to interact with the mongodb database
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 var ProductModel = require('./product');

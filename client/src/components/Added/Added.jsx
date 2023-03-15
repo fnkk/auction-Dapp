@@ -1,4 +1,5 @@
 import useEth from "../../contexts/EthContext/useEth";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button, DatePicker, Space, Form, Input } from 'antd';
 
@@ -50,6 +51,7 @@ function Added() {
     return (
         <>  
             <button onClick={test}>test</button>
+            <Link to={'/main/996'}>66666</Link>
             <Form
                 name="basic"
                 labelCol={{
