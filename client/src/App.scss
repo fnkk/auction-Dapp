@@ -1,19 +1,35 @@
 #header{
   font-size: 1.6rem;
-  height: 30px;
   width: 100%;
+  z-index: 9999;
   display: flex;
   flex-direction:row;
   position: sticky;
   top: 0px;
-  background-color: #999;
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+  /* background-color: #999; */
   clear: both;
 }
 #header .item{
   height: 100%;
   width: 100%;
-  line-height: 30px;
+  line-height: 46px;
   text-align: center;
+  flex: 1;
+}
+.ant-menu{
+  border-bottom: transparent;
+}
+#header .title{
+  flex: 2;
+  line-height: 46px;
+  text-align: center;
+  .logo{
+    width: 22px;
+  }
+}
+#header .menu{
+  flex: 10;
 }
 #header .item:hover{
   background-color: #777;

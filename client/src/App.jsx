@@ -1,6 +1,6 @@
 import { EthProvider } from "./contexts/EthContext";
 import "antd/dist/reset.css";
-import "./App.css";
+import "./App.scss";
 import router from './router';
 import Header from "./layout/component/header";
 import { RouterProvider } from "react-router-dom";

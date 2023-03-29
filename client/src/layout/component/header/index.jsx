@@ -1,23 +1,53 @@
 import { Link, useNavigate } from "react-router-dom";
-function Header(){
+import imgUrl from '../../../img/logo192.png'
+import { AppstoreOutlined, MailOutlined, SettingOutlined, BankOutlined } from '@ant-design/icons';
+import { Menu } from 'antd';
+import { useState } from 'react';
+
+function Header() {
     const navigate = useNavigate()
-    function goToLocation(address){
-        console.log(99999)
+    function goToLocation(address) {
         console.log(address)
-        navigate(address,{
-            replace:false
+        navigate(address, {
+            replace: false
         })
     }
+    const items = [
+        {
+            label: '首页',
+            key: 'homepage',
+            icon: <BankOutlined />
+        },
+        {
+            label: '数字藏品拍卖系统',
+            key: 'auction',
+            icon: <AppstoreOutlined />
+        },
+        {
+            label: '数字藏品博物馆',
+            key: 'test',
+            icon: <MailOutlined />,
+        },
+        {
+            label: '数字藏品追溯',
+            key: 'trackSource',
+            icon: <AppstoreOutlined />
+        },
+
+    ];
+    const [current, setCurrent] = useState('homepage');
+    const onClick = (e) => {
+        console.log('click ', e);
+        setCurrent(e.key);
+        goToLocation(`/${e.key}`)
+    };
     return (
         <>
-        <div id="header">
-            <div className={'item'}>FF数字藏品交易系统</div>
-            <div className={'item'} onClick={()=>goToLocation('/homepage')}>首页</div>
-            <div className={'item'} onClick={()=>goToLocation('/auction')}>数字藏品拍卖市场</div>
-            <div className={'item'} onClick={()=>goToLocation('/test')}>数字藏品博物馆</div>
-            <div className={'item'} onClick={()=>goToLocation('/trackSource')}>数字藏品溯源</div>
-            <div className={'item'} onClick={()=>goToLocation('/my')}>个人中心</div>
-        </div>
+            <div id="header">
+                <div className={'title'}><img className={'logo'} src={imgUrl}></img>FF数字藏品交易系统</div>
+                <div className={'menu'}><Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} /></div>
+                <div className={'item'} onClick={() => goToLocation('/my')}>个人中心</div>
+            </div>
         </>
     )
 }

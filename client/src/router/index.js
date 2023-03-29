@@ -1,7 +1,6 @@
 import 'dayjs/locale/zh-cn';
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Test from '../pages/test/index';
-import Demo from '../components/Demo/index';
 import Layout from '../layout';
 import Auction from '../pages/auction';
 import Homepage from '../pages/homepage';
