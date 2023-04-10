@@ -28,7 +28,9 @@ function ContractBtns({ setValue }) {
       return;
     }
     const newValue = parseInt(inputValue);
+    console.log("写入之前")
     await contract.methods.write(newValue).send({ from: accounts[0] });
+    console.log("写入之后")
   };
 
   return (

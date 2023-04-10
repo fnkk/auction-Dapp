@@ -50,8 +50,8 @@ function Added() {
 
     return (
         <>  
-            <button onClick={test}>test</button>
-            <Link to={'/main/996'}>66666</Link>
+            {/* <button onClick={test}>test</button>
+            <Link to={'/main/996'}>66666</Link> */}
             <Form
                 name="basic"
                 labelCol={{

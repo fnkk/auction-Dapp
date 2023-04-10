@@ -4,7 +4,7 @@ function Layout(){
 
     return (
         <>
-        <Header></Header>
+        <Header />
         <div id="App">
         <Outlet/>
         </div>

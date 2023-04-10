@@ -19,7 +19,7 @@ function Demo() {
       <div className="contract-container">
         <Contract value={value} />
         <ContractBtns setValue={setValue} />
-        <Test/>
+        {/* <Test/> */}
       </div>
       <Desc />
     </>;
