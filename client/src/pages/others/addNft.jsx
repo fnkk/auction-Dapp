@@ -80,11 +80,15 @@ function AddNft() {
         })
     }
 
-    const onFinish = ({nftName,description}) => {
-        
+    const onFinish = async({nftName,description}) => {
+        const res = await contract.methods._mint(accounts[0],picHash,nftName,description).send({ from: accounts[0] });
+        console.log(res,'请求合约函数的回调')
     };
     const test = ()=>{
-        console.log(contract.methods)
+        const res = contract.methods.getTokenDetail(0).call({ from: accounts[0] })
+        res.then(r=>{
+            console.log(r)
+        })
     }
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
