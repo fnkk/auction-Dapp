@@ -5,6 +5,7 @@ import Layout from '../layout';
 import Auction from '../pages/auction';
 import Homepage from '../pages/homepage';
 import My from '../pages/my';
+import AddNft from '../pages/others/addNft';
 import TrackSource from '../pages/trackSource';
 
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/my",
         element: <My />
+      },
+      {
+        path: "/addNft",
+        element: <AddNft />
       },
     ]
   },

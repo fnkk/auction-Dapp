@@ -1,10 +1,13 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 // 导入ipfs
 import IpfsApi from "ipfs-api";
 // 创建ipfs实例（要启动ipfs daemon服务）
 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
 
 function Homepage() {
+    useEffect(() => {
+        document.title = 'ff数字藏品交易系统'
+    }, [])
     const fileid = useRef(null);
     const [picHash, setPicHash] = useState('');
     const upload = async (info) => {
