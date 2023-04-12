@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
-
+import "./WTFApe.sol";
 // geth --datadir data --networkid 666 --http --http.port 8545 --allow-insecure-unlock console 2>output.log console
-contract EcommerceStore {
+contract EcommerceStore is WTFApe{
     uint256 value;
 
     function read() public view returns (uint256) {
@@ -56,7 +56,7 @@ contract EcommerceStore {
     mapping(uint256=>mapping(address => mapping(bytes32 => Bid))) bidInProduct;
     Product[] private products;
 
-    constructor() {
+    constructor() WTFApe() {
         productIndex = 0;
     }
 

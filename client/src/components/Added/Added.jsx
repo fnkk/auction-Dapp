@@ -4,14 +4,11 @@ import { useState } from "react";
 import { Button, DatePicker, Space, Form, Input } from 'antd';
 
 function Added() {
-    const buttonStyle={
-        marginRight:"15px"
+    const buttonStyle = {
+        marginRight: "15px"
     }
     const { state: { contract, accounts, web3 } } = useEth();
-    function test(){
-        console.log(web3.utils.toWei('1'))
-    }
-    const [product,setProduct] = useState({
+    const [product, setProduct] = useState({
         name: '',
         cate: '',
         des: '',
@@ -19,18 +16,17 @@ function Added() {
         endTime: ''
     });
     const { RangePicker } = DatePicker;
-    const addProductInStore = async() => {
-        // 为何调用web3对象放到外层会获取不到，useEth究竟在何时拉取state的值？？
+    const addProductInStore = async () => {
         const amt_1 = web3.utils.toWei('1');
-        const res = await contract.methods.addProductToStore(product.name,product.cate,'imagelink',product.des,product.startTime,product.endTime,amt_1,0).send({ from: accounts[0] });
+        const res = await contract.methods.addProductToStore(product.name, product.cate, 'imagelink', product.des, product.startTime, product.endTime, amt_1, 0).send({ from: accounts[0] });
         console.log(res)
     }
     const onFinish = (values) => {
         console.log('Success:', values);
-        setProduct(()=>{
-            return {...product,...values}
+        setProduct(() => {
+            return { ...product, ...values }
         })
-        console.log('product is ' ,product)
+        console.log('product is ', product)
         // 完成表单的数据收集，开始调用合约，添加product到store中
         // addProductInStore()
         // 在这里执行send操作会读取不到表单收集的值，因为setState是异步的，所以要怎么处理呢？？？
@@ -40,16 +36,16 @@ function Added() {
     };
     const onChange = (date, dateString) => {
         console.log(date, dateString);
-        var startTime = Date.parse(dateString[0])/1000
-        var endTime = Date.parse(dateString[1])/1000
-        setProduct(()=>{
-            return {...product,startTime,endTime}
+        var startTime = Date.parse(dateString[0]) / 1000
+        var endTime = Date.parse(dateString[1]) / 1000
+        setProduct(() => {
+            return { ...product, startTime, endTime }
         })
-      };
+    };
 
 
     return (
-        <>  
+        <>
             {/* <button onClick={test}>test</button>
             <Link to={'/main/996'}>66666</Link> */}
             <Form

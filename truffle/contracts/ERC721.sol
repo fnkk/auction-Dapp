@@ -13,10 +13,19 @@ contract ERC721 is IERC721, IERC721Metadata {
     using Address for address; // 使用Address库，用isContract来判断地址是否为合约
     using Strings for uint256; // 使用String库，
 
+    uint public tokenIndex;
     // Token名称
     string public override name;
     // Token代号
     string public override symbol;
+    // nft信息详情的结构体
+    struct TokenDetail {
+        string picUrl;
+        string name;
+        string introduction;
+    }
+    // tokenId 到 tokenDeta 的映射
+    mapping(uint => TokenDetail) private _detail;
     // tokenId 到 owner address 的持有人映射
     mapping(uint => address) private _owners;
     // address 到 持仓数量 的持仓量映射
@@ -32,6 +41,7 @@ contract ERC721 is IERC721, IERC721Metadata {
     constructor(string memory name_, string memory symbol_) {
         name = name_;
         symbol = symbol_;
+        tokenIndex = 0;
     }
 
     // 实现IERC165接口supportsInterface
@@ -202,14 +212,25 @@ contract ERC721 is IERC721, IERC721Metadata {
      * 1. tokenId尚不存在。
      * 2. to不是0地址.
      */
-    function _mint(address to, uint tokenId) internal virtual {
+    function _mint(
+        address to,
+        string memory _picUrl,
+        string memory _name,
+        string memory _introduction
+    ) public {
         require(to != address(0), "mint to zero address");
-        require(_owners[tokenId] == address(0), "token already minted");
-
+        require(_owners[tokenIndex] == address(0), "token already minted");
+        TokenDetail memory tokenDetail = TokenDetail(
+            _picUrl,
+            _name,
+            _introduction
+        );
+        _detail[tokenIndex] = tokenDetail;
         _balances[to] += 1;
-        _owners[tokenId] = to;
-
-        emit Transfer(address(0), to, tokenId);
+        _owners[tokenIndex] = to;
+        // tokenId自增
+        tokenIndex++;
+        emit Transfer(address(0), to, tokenIndex);
     }
 
     // 销毁函数，通过调整_balances和_owners变量来销毁tokenId，同时释放Transfer事件。条件：tokenId存在。
@@ -266,5 +287,12 @@ contract ERC721 is IERC721, IERC721Metadata {
      */
     function _baseURI() internal view virtual returns (string memory) {
         return "";
+    }
+
+    function getTokenDetail(
+        uint _tokenId
+    ) public view returns (TokenDetail memory) {
+        require(_owners[_tokenId] != address(0), "token doesn't exist");
+        return _detail[_tokenId];
     }
 }
