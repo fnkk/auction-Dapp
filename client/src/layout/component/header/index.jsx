@@ -47,7 +47,7 @@ function Header() {
     return (
         <>
             <div id="header">
-                <div className={'title'}><img className={'logo'} src={imgUrl}></img>FF数字藏品交易系统</div>
+                <div className={'title'}><img className={'logo'} alt="logo" src={imgUrl}></img>FF数字藏品交易系统</div>
                 <div className={'menu'}><Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} /></div>
                 <div className={'item'} onClick={() => goToLocation('/my','')}>个人中心</div>
             </div>

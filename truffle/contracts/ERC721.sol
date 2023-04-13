@@ -20,6 +20,7 @@ contract ERC721 is IERC721, IERC721Metadata {
     string public override symbol;
     // nft信息详情的结构体
     struct TokenDetail {
+        uint tokenId;
         string picUrl;
         string name;
         string introduction;
@@ -34,6 +35,8 @@ contract ERC721 is IERC721, IERC721Metadata {
     mapping(uint => address) private _tokenApprovals;
     //  owner地址。到operator地址 的批量授权映射
     mapping(address => mapping(address => bool)) private _operatorApprovals;
+    // owner地址 到 持有的所有tokenId的数组
+    mapping(address => uint[]) private _keepToken;
 
     /**
      * 构造函数，初始化`name` 和`symbol` .
@@ -41,7 +44,8 @@ contract ERC721 is IERC721, IERC721Metadata {
     constructor(string memory name_, string memory symbol_) {
         name = name_;
         symbol = symbol_;
-        tokenIndex = 0;
+        // 保留0字面量
+        tokenIndex = 1;
     }
 
     // 实现IERC165接口supportsInterface
@@ -121,6 +125,22 @@ contract ERC721 is IERC721, IERC721Metadata {
     }
 
     /*
+     *工具函数，输入数组和一个值，返回这个值的对应的索引值，没有则返回-1
+     */
+    function indexOf(
+        uint[] memory arr,
+        uint tokenId
+    ) private pure returns (uint) {
+        uint res = 0;
+        for (uint i = 0; i < arr.length - 1; i++) {
+            if (arr[i] == tokenId) {
+                res = i;
+            }
+        }
+        return res;
+    }
+
+    /*
      * 转账函数。通过调整_balances和_owner变量将 tokenId 从 from 转账给 to，同时释放Transfer事件。
      * 条件:
      * 1. tokenId 被 from 拥有
@@ -138,7 +158,13 @@ contract ERC721 is IERC721, IERC721Metadata {
         _approve(owner, address(0), tokenId);
 
         _balances[from] -= 1;
+        // from 对应的数组的待删除项的值变为数组最后一位的值，然后删除最后一位
+        // _keepToken[from][indexOf(_keepToken[from], tokenId)] =_keepToken[from][_keepToken[from].length-1];
+        // _keepToken[from].pop();
+        // from 对应的数组的待删除项的值改为0 代表该项被删除
+        _keepToken[from][indexOf(_keepToken[from], tokenId)] = 0;
         _balances[to] += 1;
+        _keepToken[to].push(tokenId);
         _owners[tokenId] = to;
 
         emit Transfer(from, to, tokenId);
@@ -221,12 +247,14 @@ contract ERC721 is IERC721, IERC721Metadata {
         require(to != address(0), "mint to zero address");
         require(_owners[tokenIndex] == address(0), "token already minted");
         TokenDetail memory tokenDetail = TokenDetail(
+            tokenIndex,
             _picUrl,
             _name,
             _introduction
         );
         _detail[tokenIndex] = tokenDetail;
         _balances[to] += 1;
+        _keepToken[to].push(tokenIndex);
         _owners[tokenIndex] = to;
         // tokenId自增
         tokenIndex++;
@@ -241,6 +269,7 @@ contract ERC721 is IERC721, IERC721Metadata {
         _approve(owner, address(0), tokenId);
 
         _balances[owner] -= 1;
+        _keepToken[owner][indexOf(_keepToken[owner], tokenId)] = 0;
         delete _owners[tokenId];
 
         emit Transfer(owner, address(0), tokenId);
@@ -294,5 +323,10 @@ contract ERC721 is IERC721, IERC721Metadata {
     ) public view returns (TokenDetail memory) {
         require(_owners[_tokenId] != address(0), "token doesn't exist");
         return _detail[_tokenId];
+    }
+
+    function getKeepToken(address owner) public view returns (uint[] memory) {
+        require(_balances[owner] != 0, "owner don't have token");
+        return _keepToken[owner];
     }
 }

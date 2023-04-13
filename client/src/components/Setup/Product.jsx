@@ -26,6 +26,7 @@ function Product({ i }) {
         console.log(e.target.value)
         setBidValue(e.target.value)
     }
+    // const getMessage = useCallback(async () => {
     const getMessage = useCallback(async () => {
         const value = await contract.methods.getProduct(i).call({ from: accounts[0] });
         console.log('all messege', value)
@@ -48,7 +49,7 @@ function Product({ i }) {
                 })
                 console.log(web3.currentProvider,'this is event *******',eeevent)
 
-        }
+        },[]
     )
     useEffect(() => {
         getMessage()

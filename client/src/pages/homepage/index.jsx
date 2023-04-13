@@ -52,7 +52,7 @@ function Homepage() {
                 picHash && <h3>图片已经上传到IPFS：{picHash}</h3>
             }
             {
-                picHash && <img src={"http://localhost:8080/ipfs/" + picHash} />
+                picHash && <img alt="show" src={"http://localhost:8080/ipfs/" + picHash} />
             }
 
         </div>

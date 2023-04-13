@@ -1,6 +1,7 @@
 import Product from "./Product";
+import NftItem from "../../pages/my/nftItem";
 import useEth from "../../contexts/EthContext/useEth";
-import { useState, useCallback, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 
 function Setup() {
   const { state: { contract, accounts, web3 } } = useEth();
@@ -12,7 +13,10 @@ function Setup() {
       setTotal(value)
     }
   }
-  getTotal()
+  useEffect(()=>{
+     getTotal()
+  })
+ 
   return (
     <>
       {/* <button onClick={getTotal}>get total</button> */}
@@ -21,6 +25,7 @@ function Setup() {
           let res = []
           for (let i = total; i >= 1; i--) {
             res.push((<Product key={i} i={i}></Product>))
+            res.push((<NftItem key={10+i} i={i}></NftItem>))
           }
           return res
         }()

@@ -57,6 +57,19 @@
   height: 100%;
 
 }
+#App .my {
+  width: 70%;
+  min-width: 60rem;
+  max-width: 95rem;
+  height: 100%;
+  .item{
+    margin: 15px 0;
+    font-size: 16px;
+    .title{
+      font-weight: 600;
+    }
+  }
+}
 
 code {
   display: block;
