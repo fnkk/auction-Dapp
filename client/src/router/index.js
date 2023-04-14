@@ -1,12 +1,14 @@
 import 'dayjs/locale/zh-cn';
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Test from '../pages/test/index';
+import Museum from '../pages/museum';
 import Layout from '../layout';
 import Auction from '../pages/auction';
 import Homepage from '../pages/homepage';
 import My from '../pages/my';
 import AddNft from '../pages/others/addNft';
 import TrackSource from '../pages/trackSource';
+import Transfer from '../pages/others/transfer';
 
 
 const router = createBrowserRouter([
@@ -24,7 +26,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/museum",
-        element: <Test />
+        element: <Museum />
       },
       {
         path: "/auction",
@@ -45,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "/addNft",
         element: <AddNft />
+      },
+      {
+        path: "/transfer",
+        element: <Transfer />
       },
     ]
   },

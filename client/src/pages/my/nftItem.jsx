@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button, message, Col, Row, Card } from 'antd';
 import useEth from "../../contexts/EthContext/useEth";
 import { useEffect, useState, useCallback } from "react";
@@ -14,9 +15,16 @@ function NftItem({ i }) {
         author: '',
         transferSum: ''
     });
+    const navigate = useNavigate();
+    const gotoTransfer = () => {
+        navigate('../transfer', {
+            replace: false,
+            state: {nft:nftVal}
+        })
+    }
     const getMessage = useCallback(async () => {
         const value = await contract.methods.getTokenDetail(i).call({ from: accounts[0] });
-        console.log('all messege', value)
+        // console.log('all messege', value)
         setNftVal({
             tokenId: value[0], pic: value[1], name: value[2], des: value[3],
             owner: value[4], createdTime: value[5], author: value[6], transferSum: value[7]
@@ -37,6 +45,10 @@ function NftItem({ i }) {
                 >
                     <div className={"item"}><span className='title'>名称：</span>{nftVal.name}</div>
                     <Meta title="简介" className="名称" description={nftVal.des} />
+                    <div className={"item"}>
+                        <Button type='primary' style={{ marginRight: '25px' }} onClick={() => { gotoTransfer() }}>转赠</Button>
+                        <Button type='primary'>拍卖</Button>
+                    </div>
                 </Card>
             </Col>
         </>

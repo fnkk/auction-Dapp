@@ -1,36 +1,42 @@
-#header{
+#header {
   font-size: 1.6rem;
   width: 100%;
   z-index: 9;
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   position: sticky;
   top: 0px;
   border-bottom: 1px solid rgba(5, 5, 5, 0.06);
   clear: both;
 }
-#header .item{
+
+#header .item {
   height: 100%;
   width: 100%;
   line-height: 46px;
   text-align: center;
   flex: 1;
 }
-.ant-menu{
+
+.ant-menu {
   border-bottom: transparent;
 }
-#header .title{
+
+#header .title {
   flex: 2;
   line-height: 46px;
   text-align: center;
-  .logo{
+
+  .logo {
     width: 22px;
   }
 }
-#header .menu{
+
+#header .menu {
   flex: 10;
 }
-#header .item:hover{
+
+#header .item:hover {
   background-color: #777;
   cursor: pointer
 }
@@ -57,17 +63,28 @@
   height: 100%;
 
 }
+
 #App .my {
   width: 70%;
   min-width: 60rem;
   max-width: 95rem;
   height: 100%;
-  .item{
+
+  .item {
     margin: 15px 0;
     font-size: 16px;
-    .title{
+
+    .title {
       font-weight: 600;
     }
+    .input {
+      width: 70%;
+    }
+  }
+
+  .box {
+    display: flex;
+    margin: auto;
   }
 }
 

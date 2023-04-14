@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import imgUrl from '../../../img/logo192.png'
 import { AppstoreOutlined, MailOutlined, SettingOutlined, BankOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';

@@ -35,6 +35,14 @@ app.use(function (req, res, next) {
 app.listen(3555, function () {
     console.log('Ebay Ethereum server listening on port 3555!');
 })
+app.get('/getNftList', function(req, res) {
+    console.log('请求了list',req.query)
+    // res.send('999666')
+    NftModel.find( function (err, items) {
+        console.log(items.length);
+        res.send(items);
+       })
+})
 
 function setupProductEventListner() {
     let productEvent;
