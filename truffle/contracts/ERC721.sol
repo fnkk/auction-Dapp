@@ -18,6 +18,17 @@ contract ERC721 is IERC721, IERC721Metadata {
     string public override name;
     // Token代号
     string public override symbol;
+    // 铸造nft触发的事件
+    event AddNft(
+        uint indexed tokenId,
+        string picUrl,
+        string name,
+        string introduction,
+        address owner,
+        uint createdTime,
+        address author,
+        uint transferSum
+    );
     // nft信息详情的结构体
     struct TokenDetail {
         uint tokenId;
@@ -269,6 +280,16 @@ contract ERC721 is IERC721, IERC721Metadata {
         // tokenId自增
         tokenIndex++;
         emit Transfer(address(0), to, tokenIndex);
+        emit AddNft(
+            tokenIndex,
+            _picUrl,
+            _name,
+            _introduction,
+            to,
+            _createdTime,
+            to,
+            0
+        );
     }
 
     // 销毁函数，通过调整_balances和_owners变量来销毁tokenId，同时释放Transfer事件。条件：tokenId存在。

@@ -23,6 +23,10 @@ const router = createBrowserRouter([
         element: <Test />
       },
       {
+        path: "/museum",
+        element: <Test />
+      },
+      {
         path: "/auction",
         element: <Auction />
       },

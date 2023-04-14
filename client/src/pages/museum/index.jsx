@@ -1,9 +1,9 @@
 import Test from "../test"
-function Auction(){
+function Museum(){
     return(
         <>
             <Test></Test>
         </>
     )
 }
-export default Auction;
+export default Museum;

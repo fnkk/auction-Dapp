@@ -29,7 +29,7 @@ function Header() {
         },
         {
             label: '数字藏品博物馆',
-            key: 'test',
+            key: 'museum',
             icon: <MailOutlined />,
         },
         {

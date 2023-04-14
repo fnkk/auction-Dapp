@@ -9,15 +9,16 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
 
 const { abi } = ecommerce_store_artifacts;
 address = ecommerce_store_artifacts.networks[666].address;
-ssss = new web3.eth.Contract(abi, address);
-// ssss 是通过web3.js拿到的合约
-// console.log(ssss)
+contract = new web3.eth.Contract(abi, address);
+// contract 是通过web3.js拿到的合约
+// console.log(contract)
 
 // Mongoose setup to interact with the mongodb database
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var ProductModel = require('./tables/product');
-mongoose.connect("mongodb://localhost:27017/ebay_dapp");
+var ProductModel = require('./models/product');
+var NftModel = require('./models/nft');
+mongoose.connect("mongodb://localhost:27017/ff_dapp");
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -37,11 +38,11 @@ app.listen(3555, function () {
 
 function setupProductEventListner() {
     let productEvent;
-    productEvent = ssss.events.NewProduct({
+    productEvent = contract.events.NewProduct({
         filter: null,
         fromBlock: 0
     }, function (error, event) {
-        if(error){
+        if (error) {
             console.error(error)
         }
     })
@@ -57,8 +58,30 @@ function setupProductEventListner() {
             console.error(error)
         })
 }
+function setupNftEventListner() {
+    let nftEvent = contract.events.AddNft({
+        filter: null,
+        fromBlock: 0
+    }, function (error, event) {
+        if (error) {
+            console.error(error)
+        }
+    })
+        .on("connected", function (subscriptionId) {
+            console.log(6666, subscriptionId)
+        })
+        .on("data", function (event) {
+            // 处理监听到的事件
+            console.log(9999, event.returnValues)
+            saveNft(event.returnValues)
+        })
+        .on("error", function (error, receipt) {
+            console.error(error)
+        })
+}
 
-setupProductEventListner();
+// setupProductEventListner();
+setupNftEventListner();
 
 function saveProduct(product) {
     ProductModel.findOne({ 'blockchainId': product._productId.toLocaleString() }, function (err, dbProduct) {
@@ -78,6 +101,34 @@ function saveProduct(product) {
                 handleError(err);
             } else {
                 ProductModel.count({}, function (err, count) {
+                    console.log("count is " + count);
+                })
+            }
+        });
+    })
+}
+function saveNft(nft) {
+    NftModel.findOne({ 'tokenId': nft.tokenId.toLocaleString() }, function (err, dbProduct) {
+
+        if (dbProduct != null) {
+            return;
+        }
+
+        var p = new NftModel({
+            tokenId: nft.tokenId,
+            name: nft.name,
+            introduction: nft.introduction,
+            picUrl: nft.picUrl,
+            createdTime: nft.createdTime,
+            author: nft.author,
+            owner: nft.owner,
+            transferSum: nft.transferSum
+        })
+        p.save(function (err) {
+            if (err) {
+                handleError(err);
+            } else {
+                NftModel.count({}, function (err, count) {
                     console.log("count is " + count);
                 })
             }

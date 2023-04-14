@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Form, Input, message, Upload, Modal } from 'antd';
+import { Button, Form, Input, message, Upload, Modal, Spin } from 'antd';
+import { useNavigate } from "react-router-dom";
 import { InboxOutlined } from '@ant-design/icons';
 import useEth from "../../contexts/EthContext/useEth";
 import IpfsApi from "ipfs-api";// 导入ipfs
@@ -14,11 +15,14 @@ const getBase64 = (file) =>
     });
 
 function AddNft() {
+    const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage();
     useEffect(() => {
         document.title = '创建nft'
     }, [])
     // const fileid = useRef(null);
     const { state: { contract, accounts, web3 } } = useEth();
+    const [loading, setLoading] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -80,13 +84,30 @@ function AddNft() {
         })
     }
 
-    const onFinish = async({nftName,description}) => {
-        const res = await contract.methods._mint(accounts[0],picHash,nftName,description).send({ from: accounts[0] });
-        console.log(res,'请求合约函数的回调')
+    const onFinish = async ({ nftName, description }) => {
+        var createdTime = Date.now()
+        setLoading(true)
+        const res = await contract.methods._mint(accounts[0], picHash, nftName, description, createdTime).send({ from: accounts[0] });
+        console.log(res, '_mint的回调')
+        setLoading(false)
+        if (res.blockHash) {
+            messageApi.open({
+                type: 'success',
+                content: '创建成功！',
+            });
+            navigate('/my', {
+                replace: false
+            })
+        } else {
+            messageApi.open({
+                type: 'error',
+                content: '创建失败！',
+            });
+        }
     };
-    const test = ()=>{
+    const test = () => {
         const res = contract.methods.getTokenDetail(0).call({ from: accounts[0] })
-        res.then(r=>{
+        res.then(r => {
             console.log(r)
         })
     }
@@ -95,92 +116,102 @@ function AddNft() {
     };
     return (
         <div className="container">
-            <div style={{ margin: '25px 0' }}>
-                <h2>
-                    创建新项目
-                </h2>
-                <span>支持的格式：JPG,PNG,SVG,GIF。最大不超过20MB</span>
-            </div>
-            <Form
-                name="basic"
-                labelAlign="left"
-                labelCol={{
-                    span: 6,
-                }}
-                wrapperCol={{
-                    span: 18,
-                }}
-                style={{
-                    maxWidth: 600,
-                }}
-                initialValues={{
-                    remember: true,
-                }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-            >
-                <Form.Item
-                    label=""
-                    name="picture"
-                    rules={[
-                        {
-                            required: true,
-                            message: '请上传图片!',
-                        },
-                    ]}
-                >
-                    <Upload {...props} >
-                        <p className="ant-upload-drag-icon">
-                            <InboxOutlined />
-                        </p>
-                        <p className="ant-upload-text">上传图片</p>
-                    </Upload>
-                </Form.Item>
-                <Form.Item
-                    label="名称"
-                    name="nftName"
-                    rules={[
-                        {
-                            required: true,
-                            message: '请输入nft名称!',
-                        },
-                    ]}
-                >
-                    <Input placeholder="请输入nft名称" />
-                </Form.Item>
-
-                <Form.Item
-                    label="简介"
-                    name="description"
-                >
-                    <TextArea placeholder="请输入简介" />
-                </Form.Item>
-
-                <Form.Item
+            <Spin spinning={loading} delay={500} tip="创建中...">
+                <div style={{ margin: '25px 0' }}>
+                    <h2>
+                        创建新项目
+                    </h2>
+                    <span>支持的格式：JPG,PNG,SVG,GIF。最大不超过20MB</span>
+                </div>
+                <Form
+                    name="basic"
+                    labelAlign="left"
+                    labelCol={{
+                        span: 6,
+                    }}
                     wrapperCol={{
-                        offset: 8,
-                        span: 16,
+                        span: 18,
                     }}
-                >
-                    <Button type="primary" htmlType="submit">
-                        创建
-                    </Button>
-                    <Button type="primary" onClick={()=>{test()}}>
-                        test
-                    </Button>
-                </Form.Item>
-            </Form>
-            <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                <img
-                    alt="example"
                     style={{
-                        width: '100%',
+                        maxWidth: 600,
                     }}
-                    src={previewImage}
-                />
-            </Modal>
-            {/* <h2>请上传图片：</h2>
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label=""
+                        name="picture"
+                        // 以下两条是必须的
+                        valuePropName="fileList"
+                        // 如果没有下面这一句会报错
+                        getValueFromEvent={e => {
+                            if (Array.isArray(e)) {
+                                return e;
+                            }
+                            return e && e.fileList;
+                        }}
+                        rules={[
+                            {
+                                required: true,
+                                message: '请上传图片!',
+                            },
+                        ]}
+                    >
+                        <Upload {...props} >
+                            <p className="ant-upload-drag-icon">
+                                <InboxOutlined />
+                            </p>
+                            <p className="ant-upload-text">上传图片</p>
+                        </Upload>
+                    </Form.Item>
+                    <Form.Item
+                        label="名称"
+                        name="nftName"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入nft名称!',
+                            },
+                        ]}
+                    >
+                        <Input placeholder="请输入nft名称" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="简介"
+                        name="description"
+                    >
+                        <TextArea placeholder="请输入简介" />
+                    </Form.Item>
+
+                    <Form.Item
+                        wrapperCol={{
+                            offset: 8,
+                            span: 16,
+                        }}
+                    >
+                        <Button type="primary" htmlType="submit">
+                            创建
+                        </Button>
+                        <Button type="primary" onClick={() => { test() }}>
+                            test
+                        </Button>
+                    </Form.Item>
+                </Form>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                    <img
+                        alt="example"
+                        style={{
+                            width: '100%',
+                        }}
+                        src={previewImage}
+                    />
+                </Modal>
+                {/* <h2>请上传图片：</h2>
             <div>
                 <input type='file' ref={fileid} />
             </div>
@@ -196,6 +227,7 @@ function AddNft() {
                     // picHash && <img src={"http://localhost:8080/ipfs/" + picHash} />
                 }
             </div> */}
+            </Spin>
         </div>
     )
 }
