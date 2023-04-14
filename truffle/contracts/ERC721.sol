@@ -24,6 +24,10 @@ contract ERC721 is IERC721, IERC721Metadata {
         string picUrl;
         string name;
         string introduction;
+        address owner;
+        uint createdTime;
+        address author;
+        uint transferSum;
     }
     // tokenId 到 tokenDeta 的映射
     mapping(uint => TokenDetail) private _detail;
@@ -166,7 +170,8 @@ contract ERC721 is IERC721, IERC721Metadata {
         _balances[to] += 1;
         _keepToken[to].push(tokenId);
         _owners[tokenId] = to;
-
+        _detail[tokenId].owner = to;
+        _detail[tokenId].transferSum++;
         emit Transfer(from, to, tokenId);
     }
 
@@ -242,7 +247,8 @@ contract ERC721 is IERC721, IERC721Metadata {
         address to,
         string memory _picUrl,
         string memory _name,
-        string memory _introduction
+        string memory _introduction,
+        uint _createdTime
     ) public {
         require(to != address(0), "mint to zero address");
         require(_owners[tokenIndex] == address(0), "token already minted");
@@ -250,7 +256,11 @@ contract ERC721 is IERC721, IERC721Metadata {
             tokenIndex,
             _picUrl,
             _name,
-            _introduction
+            _introduction,
+            to,
+            _createdTime,
+            to,
+            0
         );
         _detail[tokenIndex] = tokenDetail;
         _balances[to] += 1;

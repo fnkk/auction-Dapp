@@ -9,7 +9,6 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
 
 const { abi } = ecommerce_store_artifacts;
 address = ecommerce_store_artifacts.networks[666].address;
-console.log('address', address)
 ssss = new web3.eth.Contract(abi, address);
 // ssss 是通过web3.js拿到的合约
 // console.log(ssss)
@@ -17,7 +16,7 @@ ssss = new web3.eth.Contract(abi, address);
 // Mongoose setup to interact with the mongodb database
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var ProductModel = require('./product');
+var ProductModel = require('./tables/product');
 mongoose.connect("mongodb://localhost:27017/ebay_dapp");
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
