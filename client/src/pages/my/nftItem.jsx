@@ -43,6 +43,7 @@ function NftItem({ i }) {
                     }}
                     cover={<img width={"200px"} alt="tupian" src={nftVal.pic ? `http://localhost:8080/ipfs/${nftVal['pic']}` : ''} />}
                 >
+                    <div className={"item"}><span className='title'>tokenId：</span>{nftVal.tokenId}</div>
                     <div className={"item"}><span className='title'>名称：</span>{nftVal.name}</div>
                     <Meta title="简介" className="名称" description={nftVal.des} />
                     <div className={"item"}>

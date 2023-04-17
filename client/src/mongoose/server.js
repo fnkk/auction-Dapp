@@ -13,11 +13,12 @@ contract = new web3.eth.Contract(abi, address);
 // contract 是通过web3.js拿到的合约
 // console.log(contract)
 
-// Mongoose setup to interact with the mongodb database
+// Mongoose setup to interact with the mongodb databases
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 var ProductModel = require('./models/product');
 var NftModel = require('./models/nft');
+var TransferModel = require('./models/transfer');
 mongoose.connect("mongodb://localhost:27017/ff_dapp");
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -35,13 +36,19 @@ app.use(function (req, res, next) {
 app.listen(3555, function () {
     console.log('Ebay Ethereum server listening on port 3555!');
 })
-app.get('/getNftList', function(req, res) {
-    console.log('请求了list',req.query)
+app.get('/getNftList', function (req, res) {
+    // console.log('请求了list', req.query)
     // res.send('999666')
-    NftModel.find( function (err, items) {
-        console.log(items.length);
+    NftModel.find(function (err, items) {
+        // console.log(items.length);
         res.send(items);
-       })
+    })
+})
+app.get('/getTransferListById', function (req, res) {
+    var tokenId = parseInt(req.query.tokenId)
+    TransferModel.find({tokenId},function (err, items) {
+        res.send(items);
+    })
 })
 
 function setupProductEventListner() {
@@ -87,9 +94,31 @@ function setupNftEventListner() {
             console.error(error)
         })
 }
+function setupTransferEventListner() {
+    let transferEvent = contract.events.Transfer({
+        filter: null,
+        fromBlock: 0
+    }, function (error, event) {
+        if (error) {
+            console.error(error)
+        }
+    })
+        .on("connected", function (subscriptionId) {
+            console.log(6666, subscriptionId)
+        })
+        .on("data", function (event) {
+            // 处理监听到的事件
+            console.log(9999, event.returnValues)
+            saveTransfer(event.returnValues)
+        })
+        .on("error", function (error, receipt) {
+            console.error(error)
+        })
+}
 
 // setupProductEventListner();
 setupNftEventListner();
+setupTransferEventListner();
 
 function saveProduct(product) {
     ProductModel.findOne({ 'blockchainId': product._productId.toLocaleString() }, function (err, dbProduct) {
@@ -116,12 +145,6 @@ function saveProduct(product) {
     })
 }
 function saveNft(nft) {
-    NftModel.findOne({ 'tokenId': nft.tokenId.toLocaleString() }, function (err, dbProduct) {
-
-        if (dbProduct != null) {
-            return;
-        }
-
         var p = new NftModel({
             tokenId: nft.tokenId,
             name: nft.name,
@@ -137,9 +160,40 @@ function saveNft(nft) {
                 handleError(err);
             } else {
                 NftModel.count({}, function (err, count) {
-                    console.log("count is " + count);
+                    // console.log("count is " + count);
                 })
             }
         });
+}
+function saveTransfer(transfer) {
+    // 更新nft表中的tokenId对应的owner的值为to
+    NftModel.findOne({ 'tokenId': transfer.tokenId.toLocaleString() }, function (err, dbNft) {
+        console.log(dbNft,'this is dbnft')
+        if (dbNft != null) {
+            dbNft.owner = transfer.to;
+            dbNft.transferSum++
+            dbNft.save(function(err,updateTank){
+                if (err) {
+                    return handleError(err)
+                }
+            })
+        }
     })
+
+    // 录入transfer数据
+    var p = new TransferModel({
+        tokenId: transfer.tokenId,
+        from: transfer.from,
+        to: transfer.to,
+        transferTime: Date.now()
+    })
+    p.save(function (err) {
+        if (err) {
+            handleError(err);
+        } else {
+            TransferModel.count({}, function (err, count) {
+                // console.log("count is " + count);
+            })
+        }
+    });
 }

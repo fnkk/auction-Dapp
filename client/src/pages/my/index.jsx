@@ -15,11 +15,17 @@ function My() {
     const { state: { contract, accounts, web3 } } = useEth();
     const getList = useCallback(async () => {
         if (contract) {
+            var filterRes = []
             const res = await contract.methods.getKeepToken(accounts[0]).call({ from: accounts[0] })
             // console.log('获取的结果数组', res)
-            setTokenIdList(res)
+            res.forEach(i => {
+                if (i !== '0') {
+                    filterRes.push(i)
+                }
+            })
+            setTokenIdList([...filterRes])
         }
-    }, [accounts,contract])
+    }, [accounts, contract])
     useEffect(() => {
         getList()
     }, [getList])
@@ -31,15 +37,9 @@ function My() {
                 <Button type="primary" onClick={() => { goToAddNft() }} style={{ margin: '25px 0' }}><PlusOutlined />创建NFT</Button>
                 <Row gutter={16}>
                     {tokenIdList.map((item) => {
-                        if (item !== 0) {
-                            return (<NftItem key={item} i={item}>
-                            </NftItem>)
-                        }else{
-                            return null;
-                        }
-
+                        return (<NftItem key={item} i={item}>
+                        </NftItem>)
                     })}
-
                 </Row>
             </div>
 

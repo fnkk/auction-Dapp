@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
-import "./WTFApe.sol";
+import "./NFTSwap.sol";
 // geth --datadir data --networkid 666 --http --http.port 8545 --allow-insecure-unlock console 2>output.log console
 contract EcommerceStore is WTFApe{
     uint256 value;

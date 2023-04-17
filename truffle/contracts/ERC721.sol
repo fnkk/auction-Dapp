@@ -273,15 +273,16 @@ contract ERC721 is IERC721, IERC721Metadata {
             to,
             0
         );
-        _detail[tokenIndex] = tokenDetail;
+        uint tokenId = tokenIndex;
+        _detail[tokenId] = tokenDetail;
         _balances[to] += 1;
-        _keepToken[to].push(tokenIndex);
-        _owners[tokenIndex] = to;
+        _keepToken[to].push(tokenId);
+        _owners[tokenId] = to;
         // tokenId自增
         tokenIndex++;
-        emit Transfer(address(0), to, tokenIndex);
+        emit Transfer(address(0), to, tokenId);
         emit AddNft(
-            tokenIndex,
+            tokenId,
             _picUrl,
             _name,
             _introduction,
