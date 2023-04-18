@@ -9,7 +9,7 @@ import My from '../pages/my';
 import AddNft from '../pages/others/addNft';
 import TrackSource from '../pages/trackSource';
 import Transfer from '../pages/others/transfer';
-
+import AddSwap from '../pages/others/addSwap';
 
 const router = createBrowserRouter([
   {
@@ -51,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "/transfer",
         element: <Transfer />
+      },
+      {
+        path: "/addSwap",
+        element: <AddSwap />
       },
     ]
   },

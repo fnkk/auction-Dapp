@@ -19,7 +19,13 @@ function NftItem({ i }) {
     const gotoTransfer = () => {
         navigate('../transfer', {
             replace: false,
-            state: {nft:nftVal}
+            state: { nft: nftVal }
+        })
+    }
+    const gotoAddSwap = () => {
+        navigate('../addSwap',{
+            replace:false,
+            state: { nft: nftVal }
         })
     }
     const getMessage = useCallback(async () => {
@@ -48,7 +54,7 @@ function NftItem({ i }) {
                     <Meta title="简介" className="名称" description={nftVal.des} />
                     <div className={"item"}>
                         <Button type='primary' style={{ marginRight: '25px' }} onClick={() => { gotoTransfer() }}>转赠</Button>
-                        <Button type='primary'>拍卖</Button>
+                        <Button type='primary' onClick={() => { gotoAddSwap() }}>拍卖</Button>
                     </div>
                 </Card>
             </Col>

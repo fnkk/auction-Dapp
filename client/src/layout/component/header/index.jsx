@@ -10,7 +10,7 @@ function Header() {
         var title = address.split('')
         title.shift()
         title = title.join('')
-        document.title = `ff数字藏品交易系统——${title}`
+        document.title = `${title}——FF nftTradingSystem`
         setCurrent(key)
         navigate(address, {
             replace: false
@@ -23,7 +23,7 @@ function Header() {
             icon: <BankOutlined />
         },
         {
-            label: '数字藏品拍卖系统',
+            label: '数字藏品交易所',
             key: 'auction',
             icon: <AppstoreOutlined />
         },

@@ -5,9 +5,6 @@ import IpfsApi from "ipfs-api";
 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
 
 function Homepage() {
-    useEffect(() => {
-        document.title = 'ff数字藏品交易系统'
-    }, [])
     const fileid = useRef(null);
     const [picHash, setPicHash] = useState('');
     const upload = async (info) => {

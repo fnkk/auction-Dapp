@@ -46,33 +46,10 @@ app.get('/getNftList', function (req, res) {
 })
 app.get('/getTransferListById', function (req, res) {
     var tokenId = parseInt(req.query.tokenId)
-    TransferModel.find({tokenId},function (err, items) {
+    TransferModel.find({ tokenId }, function (err, items) {
         res.send(items);
     })
 })
-
-function setupProductEventListner() {
-    let productEvent;
-    productEvent = contract.events.NewProduct({
-        filter: null,
-        fromBlock: 0
-    }, function (error, event) {
-        if (error) {
-            console.error(error)
-        }
-    })
-        .on("connected", function (subscriptionId) {
-            console.log(6666, subscriptionId)
-        })
-        .on("data", function (event) {
-            // 处理监听到的事件
-            // console.log(9999, event)
-            saveProduct(event.returnValues)
-        })
-        .on("error", function (error, receipt) {
-            console.error(error)
-        })
-}
 function setupNftEventListner() {
     let nftEvent = contract.events.AddNft({
         filter: null,
@@ -115,64 +92,97 @@ function setupTransferEventListner() {
             console.error(error)
         })
 }
+function setupSwapEventListner() {
+    let listEvent = contract.events.List({
+        filter: null,
+        fromBlock: 0
+    }, function (error, event) {
+        if (error) {
+            console.error(error)
+        }
+    })
+        .on("data", function (event) {
+            saveTransfer(event.returnValues)
+        })
+        .on("error", function (error, receipt) {
+            console.error(error)
+        })
+    let PurchaseEvent = contract.events.Purchase({
+        filter: null,
+        fromBlock: 0
+    }, function (error, event) {
+        if (error) {
+            console.error(error)
+        }
+    })
+        .on("data", function (event) {
+            saveTransfer(event.returnValues)
+        })
+        .on("error", function (error, receipt) {
+            console.error(error)
+        })
+    let RevokeEvent = contract.events.Revoke({
+        filter: null,
+        fromBlock: 0
+    }, function (error, event) {
+        if (error) {
+            console.error(error)
+        }
+    })
+        .on("data", function (event) {
+            saveTransfer(event.returnValues)
+        })
+        .on("error", function (error, receipt) {
+            console.error(error)
+        })
+    let UpdateEvent = contract.events.Update({
+        filter: null,
+        fromBlock: 0
+    }, function (error, event) {
+        if (error) {
+            console.error(error)
+        }
+    })
+        .on("data", function (event) {
+            saveTransfer(event.returnValues)
+        })
+        .on("error", function (error, receipt) {
+            console.error(error)
+        })
+}
 
-// setupProductEventListner();
 setupNftEventListner();
 setupTransferEventListner();
 
-function saveProduct(product) {
-    ProductModel.findOne({ 'blockchainId': product._productId.toLocaleString() }, function (err, dbProduct) {
-
-        if (dbProduct != null) {
-            return;
-        }
-
-        var p = new ProductModel({
-            name: product._name, blockchainId: product._productId, category: product._category,
-            ipfsImageHash: product._imageLink, ipfsDescHash: product._descLink, auctionStartTime: product._auctionStartTime,
-            auctionEndTime: product._auctionEndTime, price: product._startPrice, condition: product._productCondition,
-            productStatus: 0
-        })
-        p.save(function (err) {
-            if (err) {
-                handleError(err);
-            } else {
-                ProductModel.count({}, function (err, count) {
-                    console.log("count is " + count);
-                })
-            }
-        });
-    })
-}
 function saveNft(nft) {
-        var p = new NftModel({
-            tokenId: nft.tokenId,
-            name: nft.name,
-            introduction: nft.introduction,
-            picUrl: nft.picUrl,
-            createdTime: nft.createdTime,
-            author: nft.author,
-            owner: nft.owner,
-            transferSum: nft.transferSum
-        })
-        p.save(function (err) {
-            if (err) {
-                handleError(err);
-            } else {
-                NftModel.count({}, function (err, count) {
-                    // console.log("count is " + count);
-                })
-            }
-        });
+    var p = new NftModel({
+        tokenId: nft.tokenId,
+        name: nft.name,
+        introduction: nft.introduction,
+        picUrl: nft.picUrl,
+        createdTime: nft.createdTime,
+        author: nft.author,
+        owner: nft.owner,
+        transferSum: nft.transferSum
+    })
+    p.save(function (err) {
+        if (err) {
+            handleError(err);
+        } else {
+            NftModel.count({}, function (err, count) {
+                // console.log("count is " + count);
+            })
+        }
+    });
 }
 function saveTransfer(transfer) {
     // 更新nft表中的tokenId对应的owner的值为to
     NftModel.findOne({ 'tokenId': transfer.tokenId.toLocaleString() }, function (err, dbNft) {
-        console.log(dbNft,'this is dbnft')
+        console.log(dbNft, 'this is dbnft')
         if (dbNft != null) {
             dbNft.owner = transfer.to;
             dbNft.transferSum++
-            dbNft.save(function(err,updateTank){
+            dbNft.save(function (err, updateTank) {
                 if (err) {
                     return handleError(err)
                 }
