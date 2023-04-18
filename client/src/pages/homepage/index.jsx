@@ -1,14 +1,17 @@
-// import useEth from "../../contexts/SwapContext/useEth";
+import useSwap from "../../contexts/SwapContext/useSwap"
 import useEth from "../../contexts/EthContext/useEth";
 
 function Homepage() {
-    // var a = useSwap();
-    var b = useEth();
-    
-    // console.log('this is a:',a)
-    console.log('this is b:',b)
+    const { state: { contract, accounts, web3, address } } = useEth();
+    const { state: { contract: swapContract, address: swapAddress } } = useSwap();
+
+    const test = async() => {
+        console.log(contract)
+        console.log(swapContract)
+    }   
     return (
         <div>
+            <button onClick={() => { test() }}>test</button>
         </div>
     )
 }

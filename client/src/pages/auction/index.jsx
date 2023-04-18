@@ -1,16 +1,30 @@
-import { Tabs } from 'antd';
+import { Tabs, Row } from 'antd';
+import NftItem from './nftItem';
+import { useState } from 'react';
 function Auction() {
+    const [activedList,setActivedList] = useState([])
+    const [inactivedList,setInActivedList] = useState([])
     const onChange = (key) => {
         console.log(key);
     };
     const actived = () => {
         return (<>
-            进行中
+            <Row gutter={16}>
+                    {activedList.map((item) => {
+                        return (<NftItem key={item} i={item}>
+                        </NftItem>)
+                    })}
+                </Row>
         </>)
     }
     const inActived = () => {
         return (<>
-            已结束
+            <Row gutter={16}>
+                    {inactivedList.map((item) => {
+                        return (<NftItem key={item} i={item}>
+                        </NftItem>)
+                    })}
+                </Row>
         </>)
     }
     const items = [

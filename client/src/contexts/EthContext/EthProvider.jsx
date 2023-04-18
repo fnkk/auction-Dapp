@@ -36,7 +36,7 @@ function EthProvider({ children }) {
         console.error(err);
       }
     };
-
+    console.log(777999999)
     tryInit();
   }, [init]);
 

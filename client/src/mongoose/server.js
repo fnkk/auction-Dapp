@@ -58,6 +58,16 @@ app.get('/getTransferListById', function (req, res) {
         res.send(items);
     })
 })
+app.get('/getActivedSwapList',function(err,res) {
+    SwapModel.find({state:0},function(err,items){
+        res.send(items);
+    })
+})
+app.get('/getInactivedSwapList',function(err,res) {
+    SwapModel.find({state:1},function(err,items){
+        res.send(items);
+    })
+})
 function setupNftEventListner() {
     let nftEvent = contract.events.AddNft({
         filter: null,
@@ -98,6 +108,7 @@ function setupTransferEventListner() {
         })
 }
 function setupSwapEventListner() {
+    console.log()
     let listEvent = swapContract.events.List({
         filter: null,
         fromBlock: 0
@@ -105,9 +116,12 @@ function setupSwapEventListner() {
         if (error) {
             console.error(error)
         }
+    })  .on("connected", function (subscriptionId) {
+        console.log(777, subscriptionId)
     })
         .on("data", function (event) {
             saveList(event.returnValues)
+            console.log(888,event.returnValues)
         })
         .on("error", function (error, receipt) {
             console.error(error)
@@ -214,7 +228,7 @@ function saveTransfer(transfer) {
     });
 }
 function saveList(list) {
-    var p = new NftModel({
+    var p = new SwapModel({
         tokenId: list.tokenId,
         seller: list.seller,
         buyer: null,

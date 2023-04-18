@@ -1,11 +1,7 @@
 const EcommerceStore = artifacts.require("EcommerceStore");
-const NftSwap = artifacts.require("NFTSwap");
 
 module.exports = function (deployer) {
   deployer.deploy(EcommerceStore);
-};
-module.exports = function (deployer) {
-  deployer.deploy(NftSwap);
 };
 // const SimpleStorage = artifacts.require("SimpleStorage");
 // const WTFApe = artifacts.require("WTFApe");

@@ -51,7 +51,7 @@ contract ERC721 is IERC721, IERC721Metadata {
     //  owner地址。到operator地址 的批量授权映射
     mapping(address => mapping(address => bool)) private _operatorApprovals;
     // owner地址 到 持有的所有tokenId的数组
-    mapping(address => uint[]) private _keepToken;
+    mapping(address => uint[]) public _keepToken;
 
     /**
      * 构造函数，初始化`name` 和`symbol` .
@@ -145,9 +145,9 @@ contract ERC721 is IERC721, IERC721Metadata {
     function indexOf(
         uint[] memory arr,
         uint tokenId
-    ) private pure returns (uint) {
+    ) public pure returns (uint) {
         uint res = 0;
-        for (uint i = 0; i < arr.length - 1; i++) {
+        for (uint i = 0; i <= arr.length - 1; i++) {
             if (arr[i] == tokenId) {
                 res = i;
             }

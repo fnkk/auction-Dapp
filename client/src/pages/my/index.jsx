@@ -17,7 +17,7 @@ function My() {
         if (contract) {
             var filterRes = []
             const res = await contract.methods.getKeepToken(accounts[0]).call({ from: accounts[0] })
-            // console.log('获取的结果数组', res)
+            console.log('获取的结果数组', res)
             res.forEach(i => {
                 if (i !== '0') {
                     filterRes.push(i)

@@ -1,4 +1,4 @@
-import { Button, Card, Input, Spin } from 'antd';
+import { Button, Card, Input, Spin, message } from 'antd';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom'
 import useEth from "../../contexts/EthContext/useEth";
@@ -6,8 +6,10 @@ import useSwap from "../../contexts/SwapContext/useSwap"
 import toDate from '../../utils/toDate'
 
 function AddSwap() {
-    const { state: { contract, accounts, web3,address } } = useEth();
-    const { state: { contract:swapContract } } = useSwap();
+    const { state: { contract, accounts, web3, address } } = useEth();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const { state: { contract: swapContract, address: swapAddress } } = useSwap();
     const state = useLocation();
     const [nftVal, setNftVal] = useState(state.state.nft);
     const [loading, setLoading] = useState(false);
@@ -17,23 +19,33 @@ function AddSwap() {
     }
     const putList = async () => {
         setLoading(true)
-        const res = await swapContract.methods.list(address, nftVal.tokenId, price).send({ from: accounts[0] });
-        console.log(res)
-        setLoading(false)
-        if (res.blockHash) {
-            messageApi.open({
-                type: 'success',
-                content: '创建成功！',
-            });
-            navigate('/my', {
-                replace: false
-            })
-        } else {
+        try {
+            await contract.methods.approve(swapAddress, nftVal.tokenId).send({ from: accounts[0] })
+            const res = await swapContract.methods.list(address, nftVal.tokenId, price).send({ from: accounts[0] });
+            console.log(res)
+            setLoading(false)
+            if (res.blockHash) {
+                messageApi.open({
+                    type: 'success',
+                    content: '创建成功！',
+                });
+                navigate('/my', {
+                    replace: false
+                })
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: '创建失败！',
+                });
+            }
+        } catch {
+            setLoading(false)
             messageApi.open({
                 type: 'error',
                 content: '创建失败！',
             });
         }
+
     }
     return (
         <>
