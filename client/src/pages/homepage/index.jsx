@@ -1,57 +1,14 @@
-import { useRef, useState, useEffect } from "react";
-// 导入ipfs
-import IpfsApi from "ipfs-api";
-// 创建ipfs实例（要启动ipfs daemon服务）
-var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
+// import useEth from "../../contexts/SwapContext/useEth";
+import useEth from "../../contexts/EthContext/useEth";
 
 function Homepage() {
-    const fileid = useRef(null);
-    const [picHash, setPicHash] = useState('');
-    const upload = async (info) => {
-        let reader = new FileReader()
-        reader.readAsArrayBuffer(info)
-
-        reader.onloadend = () => {
-            console.log("result : ", reader.result)
-            saveToIpfs(reader.result).then(hash => {
-                console.log("hash : ", hash)
-                setPicHash(hash)
-            })
-        }
-    }
-
-    const saveToIpfs = (data) => {
-        const buffer = Buffer.from(data)
-        return new Promise(async (resolve, reject) => {
-            try {
-                let res = await ipfs.add(buffer)
-                let hash = res[0].hash
-                console.log('hash is:', hash)
-                resolve(hash)
-            } catch (e) {
-                console.log('出错了！！！')
-                reject(e)
-            }
-        })
-    }
-
+    // var a = useSwap();
+    var b = useEth();
+    
+    // console.log('this is a:',a)
+    console.log('this is b:',b)
     return (
         <div>
-            <h2>请上传图片：</h2>
-            <div>
-                <input type='file' ref={fileid} />
-            </div>
-            <button onClick={() => {
-                console.log(fileid.current.files[0])
-                upload(fileid.current.files[0])
-            }}>点击我上传到ipfs</button>
-            {
-                picHash && <h3>图片已经上传到IPFS：{picHash}</h3>
-            }
-            {
-                picHash && <img alt="show" src={"http://localhost:8080/ipfs/" + picHash} />
-            }
-
         </div>
     )
 }

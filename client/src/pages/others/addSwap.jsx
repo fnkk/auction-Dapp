@@ -2,20 +2,22 @@ import { Button, Card, Input, Spin } from 'antd';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom'
 import useEth from "../../contexts/EthContext/useEth";
+import useSwap from "../../contexts/SwapContext/useSwap"
 import toDate from '../../utils/toDate'
 
 function AddSwap() {
-    const { state: { contract, accounts, web3 } } = useEth();
+    const { state: { contract, accounts, web3,address } } = useEth();
+    const { state: { contract:swapContract } } = useSwap();
     const state = useLocation();
     const [nftVal, setNftVal] = useState(state.state.nft);
     const [loading, setLoading] = useState(false);
     const [price, setPrice] = useState('');
     const changeTo = (e) => {
-        setTo(e.target.value)
+        setPrice(e.target.value)
     }
     const putList = async () => {
         setLoading(true)
-        const res = await contract.methods.list(address, nftVal.tokenId, price).send({ from: accounts[0] });
+        const res = await swapContract.methods.list(address, nftVal.tokenId, price).send({ from: accounts[0] });
         console.log(res)
         setLoading(false)
         if (res.blockHash) {

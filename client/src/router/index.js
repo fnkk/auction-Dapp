@@ -14,7 +14,7 @@ import AddSwap from '../pages/others/addSwap';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to='/test' />
+    element: <Navigate to='/homepage' />
   },
   {
     path: "/",

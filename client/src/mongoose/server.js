@@ -1,4 +1,5 @@
 var ecommerce_store_artifacts = require('../contracts/EcommerceStore.json')
+var nft_swap_artifacts = require('../contracts/NFTSwap.json')
 var contract = require('truffle-contract')
 var Web3 = require('web3')
 var provider = new Web3.providers.WebsocketProvider("ws://localhost:8546");
@@ -12,6 +13,9 @@ address = ecommerce_store_artifacts.networks[666].address;
 contract = new web3.eth.Contract(abi, address);
 // contract 是通过web3.js拿到的合约
 // console.log(contract)
+const {abi:swapAbi} = nft_swap_artifacts;
+var swapAddress = nft_swap_artifacts.networks[666].address;
+swapContract = new web3.eth.Contract(swapAbi,swapAddress);
 
 // Mongoose setup to interact with the mongodb databases
 var mongoose = require('mongoose');
@@ -25,6 +29,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // Express server which the frontend with interact with
 var express = require('express');
+const SwapModel = require('./models/swap');
 var app = express();
 
 app.use(function (req, res, next) {
@@ -37,10 +42,13 @@ app.listen(3555, function () {
     console.log('Ebay Ethereum server listening on port 3555!');
 })
 app.get('/getNftList', function (req, res) {
-    // console.log('请求了list', req.query)
-    // res.send('999666')
     NftModel.find(function (err, items) {
-        // console.log(items.length);
+        res.send(items);
+    })
+})
+app.get('/getNftListById', function (req, res) {
+    var tokenId = parseInt(req.query.tokenId)
+    NftModel.find({ tokenId }, function (err, items) {
         res.send(items);
     })
 })
@@ -59,9 +67,6 @@ function setupNftEventListner() {
             console.error(error)
         }
     })
-        .on("connected", function (subscriptionId) {
-            console.log(6666, subscriptionId)
-        })
         .on("data", function (event) {
             // 处理监听到的事件
             console.log(9999, event.returnValues)
@@ -93,7 +98,7 @@ function setupTransferEventListner() {
         })
 }
 function setupSwapEventListner() {
-    let listEvent = contract.events.List({
+    let listEvent = swapContract.events.List({
         filter: null,
         fromBlock: 0
     }, function (error, event) {
@@ -102,12 +107,12 @@ function setupSwapEventListner() {
         }
     })
         .on("data", function (event) {
-            saveTransfer(event.returnValues)
+            saveList(event.returnValues)
         })
         .on("error", function (error, receipt) {
             console.error(error)
         })
-    let PurchaseEvent = contract.events.Purchase({
+    let PurchaseEvent = swapContract.events.Purchase({
         filter: null,
         fromBlock: 0
     }, function (error, event) {
@@ -116,12 +121,12 @@ function setupSwapEventListner() {
         }
     })
         .on("data", function (event) {
-            saveTransfer(event.returnValues)
+            savePurchase(event.returnValues)
         })
         .on("error", function (error, receipt) {
             console.error(error)
         })
-    let RevokeEvent = contract.events.Revoke({
+    let RevokeEvent = swapContract.events.Revoke({
         filter: null,
         fromBlock: 0
     }, function (error, event) {
@@ -130,12 +135,12 @@ function setupSwapEventListner() {
         }
     })
         .on("data", function (event) {
-            saveTransfer(event.returnValues)
+            saveRevoke(event.returnValues)
         })
         .on("error", function (error, receipt) {
             console.error(error)
         })
-    let UpdateEvent = contract.events.Update({
+    let UpdateEvent = swapContract.events.Update({
         filter: null,
         fromBlock: 0
     }, function (error, event) {
@@ -144,7 +149,7 @@ function setupSwapEventListner() {
         }
     })
         .on("data", function (event) {
-            saveTransfer(event.returnValues)
+            saveUpdate(event.returnValues)
         })
         .on("error", function (error, receipt) {
             console.error(error)
@@ -153,6 +158,7 @@ function setupSwapEventListner() {
 
 setupNftEventListner();
 setupTransferEventListner();
+setupSwapEventListner();
 
 function saveNft(nft) {
     var p = new NftModel({
@@ -206,4 +212,58 @@ function saveTransfer(transfer) {
             })
         }
     });
+}
+function saveList(list) {
+    var p = new NftModel({
+        tokenId: list.tokenId,
+        seller: list.seller,
+        buyer: null,
+        price: list.price,
+        createdTime: Date.now(),
+        swapTime: null,
+        state: 0,
+    })
+    p.save(function (err) {
+        if (err) {
+            handleError(err);
+        }
+    });
+}
+function savePurchase(list) {
+    SwapModel.findOne({ tokenId: list.tokenId.toLocaleString(), state: 0 }, function (err, tank) {
+        if (tank) {
+            tank.buyer = list.buyer
+            tank.swapTime = Date.now()
+            tank.state = 1
+            tank.save(function (err) {
+                if (err) {
+                    handleError(err);
+                }
+            })
+        }
+    })
+}
+function saveRevoke(list) {
+    SwapModel.findOne({ tokenId: list.tokenId.toLocaleString(), state: 0 }, function (err, tank) {
+        if (tank) {
+            tank.state = 2
+            tank.save(function (err) {
+                if (err) {
+                    handleError(err);
+                }
+            })
+        }
+    })
+}
+function saveUpdate(list) {
+    SwapModel.findOne({ tokenId: list.tokenId.toLocaleString(), state: 0 }, function (err, tank) {
+        if (tank) {
+            tank.price = list.price
+            tank.save(function (err) {
+                if (err) {
+                    handleError(err);
+                }
+            })
+        }
+    })
 }
