@@ -24,7 +24,7 @@ function NftItem({ i,getActivedSwapList }) {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const onChange = (value) => {
-        // console.log('changed', value);
+        // console.log('changed', value)
         setNewPrice(value)
     };
     const showModal = () => {
@@ -47,6 +47,7 @@ function NftItem({ i,getActivedSwapList }) {
                     type: 'success',
                     content: '购买成功！',
                 });
+            getActivedSwapList()
             }
         } catch {
             messageApi.open({
@@ -87,6 +88,7 @@ function NftItem({ i,getActivedSwapList }) {
                 type: 'success',
                 content: '撤单成功！',
             });
+            getActivedSwapList()
         } catch {
             messageApi.open({
                 type: 'error',

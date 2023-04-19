@@ -1,17 +1,47 @@
-import useSwap from "../../contexts/SwapContext/useSwap"
-import useEth from "../../contexts/EthContext/useEth";
-
+import { Carousel } from 'antd';
+import Particles from 'particlesjs'
+import { useEffect } from 'react';
 function Homepage() {
-    const { state: { contract, accounts, web3, address } } = useEth();
-    const { state: { contract: swapContract, address: swapAddress } } = useSwap();
-
-    const test = async() => {
-        console.log(contract)
-        console.log(swapContract)
-    }   
+    useEffect(() => {
+        Particles.init({
+            selector: '.bk',
+            color: ['#9EFF76'],
+            connectParticles: true,
+            speed: 0.2,
+            sizeVariations: 3,
+        });
+    }, [])
+    const contentStyle = {
+        height: '160px',
+        color: '#fff',
+        lineHeight: '160px',
+        windth: '160px',
+        textAlign: 'center',
+        background: '#364d79'
+    };
     return (
-        <div>
-            <button onClick={() => { test() }}>test</button>
+        <div className="homepage">
+            <div className='top_box'>
+                <canvas className='bk'>
+                </canvas>
+            </div>
+            <div className='content'>
+                {/* <Carousel autoplay>
+                    <div>
+                        <h3 style={contentStyle}>1</h3>
+                    </div>
+                    <div>
+                        <h3 style={contentStyle}>2</h3>
+                    </div>
+                    <div>
+                        <h3 style={contentStyle}>3</h3>
+                    </div>
+                    <div>
+                        <h3 style={contentStyle}>4</h3>
+                    </div>
+                </Carousel> */}
+            </div>
+
         </div>
     )
 }

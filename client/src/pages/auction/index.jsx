@@ -35,7 +35,7 @@ function Auction() {
             });
         }
         
-    }, [contract])
+    }, [contract,accounts])
     useEffect(() => {
         getActivedSwapList()
     }, [getActivedSwapList])

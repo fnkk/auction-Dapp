@@ -1,7 +1,7 @@
 function Footer(){
     return(
         <div className="footer">
-            © 2023 Fnkk.
+            {/* © 2023 Fnkk. */}
         </div>
     )
 }
