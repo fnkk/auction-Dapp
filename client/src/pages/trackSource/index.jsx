@@ -1,48 +1,41 @@
-import { Button, Row, Col, Input, Table } from 'antd';
-import { useEffect, useState, useCallback,useRef } from "react";
-import { SearchOutlined } from '@ant-design/icons';
+import {  Row, Col, Input, Table } from 'antd';
+import {  useState } from "react";
+import toDate from "../../utils/toDate"
 function TrackSource() {
     const { Search } = Input;
     const [transferList, setTransferList] = useState([]);
-    const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
-    const searchInput = useRef(null);
-    const handleSearch = (selectedKeys, confirm, dataIndex) => {
-        confirm();
-        setSearchText(selectedKeys[0]);
-        setSearchedColumn(dataIndex);
-    };
-    const handleReset = (clearFilters) => {
-        clearFilters();
-        setSearchText('');
-    };
     const columns = [
         {
             title: 'tokenId',
             dataIndex: 'tokenId',
-            key: 'tokenId',
+            key: '_id',
             width: '30%',
         },
         {
             title: '交易发起地址',
             dataIndex: 'from',
-            key: 'from',
+            key: '_id',
             width: '20%',
 
         },
         {
             title: '交易接收地址',
             dataIndex: 'to',
-            key: 'to',
+            key: '_id',
             width: '20%',
         },
         {
             title: '交易时间',
             dataIndex: 'transferTime',
-            width: '30%',
-            key: 'transferTime',
-            sorter: (a, b) => a.address.length - b.address.length,
+            width: '40%',
+            key: '_id',
+            sorter: (a, b) => a.transferTime - b.transferTime,
             sortDirections: ['descend', 'ascend'],
+            render: (val) => {
+                return (<>
+                    {toDate(val)}
+                </>)
+            }
         },
     ];
     const onSearch = (value) => {
@@ -60,7 +53,7 @@ function TrackSource() {
         <>
             <div className="my">
                 <h2 style={{ margin: '25px 0' }}>数字藏品溯源</h2>
-                <Row gutter={16} style={{margin:'35px 0'}}>
+                <Row gutter={16} style={{ margin: '35px 0' }}>
                     <Col span={24}>
                         <Search
                             placeholder="请输入要溯源的数字藏品的tokenId"
@@ -72,7 +65,7 @@ function TrackSource() {
                     </Col>
 
                 </Row>
-                <Table columns={columns} dataSource={transferList} />
+                <Table columns={columns} dataSource={transferList} rowKey={columns => columns._id} />
             </div>
         </>
     )

@@ -64,7 +64,7 @@ function AddSwap() {
                             <div className={"item"}><span className='title'>作者：</span>{nftVal.author}</div>
                             <div className={"item"}><span className='title'>创建时间：</span>{toDate(nftVal.createdTime)}</div>
                             <div className={"item"}><span className='title'>价格：</span>
-                                <Input className={"input"} value={price} onChange={(e) => { changeTo(e) }} placeholder="请输入价格"></Input></div>
+                                <Input className={"input"} value={price} addonAfter="wei" onChange={(e) => { changeTo(e) }} placeholder="请输入价格"></Input></div>
                             <div className='item'><Button type='primary' onClick={() => { putList() }}>提交</Button></div>
                         </Card>
                     </div>

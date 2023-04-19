@@ -58,15 +58,37 @@ app.get('/getTransferListById', function (req, res) {
         res.send(items);
     })
 })
-app.get('/getActivedSwapList',function(err,res) {
+app.get('/getActivedSwapList',function(req,res) {
     SwapModel.find({state:0},function(err,items){
         res.send(items);
     })
 })
-app.get('/getInactivedSwapList',function(err,res) {
+app.get('/getInactivedSwapList',function(req,res) {
     SwapModel.find({state:1},function(err,items){
         res.send(items);
     })
+})
+app.get('/getSwapListBySellerAddress',function(req,res) {
+    if(req.query.address){
+        var seller = req.query.address
+        SwapModel.find({seller},function(err,items){
+        res.send(items);
+    })
+    }else{
+        res.send();
+    }
+    
+})
+app.get('/getSwapListByBuyerAddress',function(req,res) {
+    if(req.query.address){
+        var buyer = req.query.address
+        SwapModel.find({buyer},function(err,items){
+        res.send(items);
+    })
+    }else{
+        res.send();
+    }
+    
 })
 function setupNftEventListner() {
     let nftEvent = contract.events.AddNft({
@@ -272,7 +294,8 @@ function saveRevoke(list) {
 function saveUpdate(list) {
     SwapModel.findOne({ tokenId: list.tokenId.toLocaleString(), state: 0 }, function (err, tank) {
         if (tank) {
-            tank.price = list.price
+            // console.log("list is :",list)
+            tank.price = list.newPrice
             tank.save(function (err) {
                 if (err) {
                     handleError(err);
