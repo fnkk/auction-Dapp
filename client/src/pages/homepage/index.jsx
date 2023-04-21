@@ -1,47 +1,53 @@
-import { Carousel } from 'antd';
-import Particles from 'particlesjs'
-import { useEffect } from 'react';
+import { Carousel, Button } from 'antd';
+import { useEffect, useCallback, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 function Homepage() {
-    useEffect(() => {
-        Particles.init({
-            selector: '.bk',
-            color: ['#9EFF76'],
-            connectParticles: true,
-            speed: 0.2,
-            sizeVariations: 3,
-        });
+    const [nftList, setNftList] = useState([]);
+    const navigate = useNavigate()
+    const getList = useCallback(() => {
+        fetch("http://localhost:3555/getNftList")
+            .then(res => res.json())
+            .then(json => {
+                setNftList([...json])
+            });
     }, [])
-    const contentStyle = {
-        height: '160px',
-        color: '#fff',
-        lineHeight: '160px',
-        windth: '160px',
-        textAlign: 'center',
-        background: '#364d79'
-    };
+    useEffect(() => {
+        getList()
+    }, [getList])
+    function goToLocation(address) {
+        navigate(address, {
+            replace: false
+        })
+    }
     return (
         <div className="homepage">
             <div className='top_box'>
-                <canvas className='bk'>
-                </canvas>
+                <div className="aside">
+                    <div className='top'>发现、创造、收藏<br></br>不一样的数字藏品</div>
+                    <div className="mid">在眼花缭乱的作品中，与它不期而遇</div>
+                    <div className="bottom">
+                        <Button type='primary' style={{ marginRight: '25px' }} onClick={() => { goToLocation('../museum') }}>探索</Button>
+                        <Button onClick={() => { goToLocation('../addNft') }}>创建</Button>
+                    </div>
+                </div>
+                <div className='content'>
+                    <Carousel autoplay>
+                        {
+                            nftList.map((i, index) => {
+                                if (index <= 5) {
+                                    return (
+                                        <div key={index} onClick={() => { goToLocation('../auction') }}>
+                                            <img width={'300px'} height={'350px'} src={i.picUrl ? `http://localhost:8080/ipfs/${i['picUrl']}` : ''} alt="showImg" />
+                                        </div>
+                                    )
+                                }else {
+                                    return null;
+                                }
+                            })
+                        }
+                    </Carousel>
+                </div>
             </div>
-            <div className='content'>
-                {/* <Carousel autoplay>
-                    <div>
-                        <h3 style={contentStyle}>1</h3>
-                    </div>
-                    <div>
-                        <h3 style={contentStyle}>2</h3>
-                    </div>
-                    <div>
-                        <h3 style={contentStyle}>3</h3>
-                    </div>
-                    <div>
-                        <h3 style={contentStyle}>4</h3>
-                    </div>
-                </Carousel> */}
-            </div>
-
         </div>
     )
 }
