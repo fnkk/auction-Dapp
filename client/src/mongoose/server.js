@@ -20,7 +20,6 @@ swapContract = new web3.eth.Contract(swapAbi,swapAddress);
 // Mongoose setup to interact with the mongodb databases
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var ProductModel = require('./models/product');
 var NftModel = require('./models/nft');
 var TransferModel = require('./models/transfer');
 mongoose.connect("mongodb://localhost:27017/ff_dapp");
@@ -39,7 +38,7 @@ app.use(function (req, res, next) {
 });
 
 app.listen(3555, function () {
-    console.log('Ebay Ethereum server listening on port 3555!');
+    console.log('server listening on port 3555!');
 })
 app.get('/getNftList', function (req, res) {
     NftModel.find(function (err, items) {
@@ -88,7 +87,6 @@ app.get('/getSwapListByBuyerAddress',function(req,res) {
     }else{
         res.send();
     }
-    
 })
 function setupNftEventListner() {
     let nftEvent = contract.events.AddNft({
