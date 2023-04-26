@@ -197,9 +197,7 @@ function AddNft() {
                         <Button type="primary" htmlType="submit">
                             创建
                         </Button>
-                        <Button type="primary" onClick={() => { test() }}>
-                            test
-                        </Button>
+                       
                     </Form.Item>
                 </Form>
                 <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
