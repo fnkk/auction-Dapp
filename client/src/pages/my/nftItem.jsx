@@ -47,7 +47,8 @@ function NftItem({ i }) {
                     style={{
                         width: 240,
                     }}
-                    cover={<img width={"200px"} alt="tupian" src={nftVal.pic ? `http://localhost:8080/ipfs/${nftVal['pic']}` : ''} />}
+                    // cover={<img width={"200px"} alt="tupian" src={nftVal.pic ? `http://localhost:8080/ipfs/${nftVal['pic']}` : ''} />}
+                    cover={<img width={"200px"} alt="tupian" src={nftVal.pic ? `https://dweb.link/ipfs/${nftVal['pic']}` : ''} />}
                 >
                     <div className={"item"}><span className='title'>tokenId：</span>{nftVal.tokenId}</div>
                     <div className={"item"}><span className='title'>名称：</span>{nftVal.name}</div>

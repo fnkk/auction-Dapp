@@ -1,9 +1,11 @@
-import {  Row, Col, Input, Table } from 'antd';
-import {  useState } from "react";
+import { Row, Col, Input, Table } from 'antd';
+import { useState } from "react";
+import useSwap from "../../contexts/SwapContext/useSwap"
 import toDate from "../../utils/toDate"
 function TrackSource() {
     const { Search } = Input;
     const [transferList, setTransferList] = useState([]);
+    const { state: { address } } = useSwap();
     const columns = [
         {
             title: 'tokenId',
@@ -65,6 +67,7 @@ function TrackSource() {
                     </Col>
 
                 </Row>
+                <h3>注：本交易系统的合约地址为{address}</h3>
                 <Table columns={columns} dataSource={transferList} rowKey={columns => columns._id} />
             </div>
         </>

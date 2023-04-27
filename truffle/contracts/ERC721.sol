@@ -334,12 +334,9 @@ contract ERC721 is IERC721, IERC721Metadata {
         uint256 tokenId
     ) public view virtual override returns (string memory) {
         require(_owners[tokenId] != address(0), "Token Not Exist");
-
+        string memory picUrl = getTokenDetail(tokenId).picUrl;
         string memory baseURI = _baseURI();
-        return
-            bytes(baseURI).length > 0
-                ? string(abi.encodePacked(baseURI, tokenId.toString()))
-                : "";
+        return string(abi.encodePacked(baseURI, picUrl)); 
     }
 
     /**

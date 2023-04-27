@@ -109,6 +109,7 @@ function NftItem({ i,getActivedSwapList }) {
         })
     }, [accounts, i, contract])
     useEffect(() => {
+        console.log('address:',address)
         getMessage()
     }, [getMessage])
     return (
