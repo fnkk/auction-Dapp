@@ -97,8 +97,6 @@ function NftItem({ i,getActivedSwapList }) {
         } finally {
             setLoading(false)
         }
-
-
     }
     const getMessage = useCallback(async () => {
         const value = await contract.methods.getTokenDetail(i.tokenId).call({ from: accounts[0] });
