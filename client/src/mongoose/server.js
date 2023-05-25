@@ -1,4 +1,4 @@
-var ecommerce_store_artifacts = require('../contracts/EcommerceStore.json')
+var ecommerce_store_artifacts = require('../contracts/FFApe.json')
 var nft_swap_artifacts = require('../contracts/NFTSwap.json')
 var contract = require('truffle-contract')
 var Web3 = require('web3')
@@ -99,7 +99,6 @@ function setupNftEventListner() {
     })
         .on("data", function (event) {
             // 处理监听到的事件
-            console.log(9999, event.returnValues)
             saveNft(event.returnValues)
         })
         .on("error", function (error, receipt) {
@@ -208,17 +207,13 @@ function saveNft(nft) {
     p.save(function (err) {
         if (err) {
             handleError(err);
-        } else {
-            NftModel.count({}, function (err, count) {
-                // console.log("count is " + count);
-            })
-        }
+        } 
     });
 }
 function saveTransfer(transfer) {
     // 更新nft表中的tokenId对应的owner的值为to
     NftModel.findOne({ 'tokenId': transfer.tokenId.toLocaleString() }, function (err, dbNft) {
-        console.log(dbNft, 'this is dbnft')
+        // console.log(dbNft, 'this is dbnft')
         if (dbNft != null) {
             dbNft.owner = transfer.to;
             dbNft.transferSum++

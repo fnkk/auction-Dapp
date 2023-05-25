@@ -263,15 +263,7 @@ contract ERC721 is IERC721, IERC721Metadata {
     ) public {
         require(to != address(0), "mint to zero address");
         require(_owners[tokenIndex] == address(0), "token already minted");
-        TokenDetail memory tokenDetail = TokenDetail(
-            tokenIndex,
-            _picUrl,
-            _name,
-            _introduction,
-            to,
-            _createdTime,
-            to,
-            0
+        TokenDetail memory tokenDetail = TokenDetail(tokenIndex,_picUrl,_name,_introduction,to,_createdTime,to,0
         );
         uint tokenId = tokenIndex;
         _detail[tokenId] = tokenDetail;
@@ -281,16 +273,7 @@ contract ERC721 is IERC721, IERC721Metadata {
         // tokenId自增
         tokenIndex++;
         emit Transfer(address(0), to, tokenId);
-        emit AddNft(
-            tokenId,
-            _picUrl,
-            _name,
-            _introduction,
-            to,
-            _createdTime,
-            to,
-            0
-        );
+        emit AddNft(tokenId,_picUrl,_name,_introduction,to,_createdTime,to,0);
     }
 
     // 销毁函数，通过调整_balances和_owners变量来销毁tokenId，同时释放Transfer事件。条件：tokenId存在。
